@@ -45,18 +45,14 @@ namespace ATMСonsole
                     numOfb1++; s1 -= 50000; 
                 }
             }
-            while (sum >= 200000) 
-            { if(numOfb1 > 4){ numOfb3++; numOfb1 -= 4; sum -= 200000; } }
-            Console.WriteLine(numOfb1);
+            while (sum >= 200000)
+            { if (numOfb1 > 4 && list[2].Count != 0) { numOfb3++; numOfb1 -= 4; sum -= 200000; } else if (list[2].Count == 0 && list[1].Count != 0) { numOfb2++; numOfb1 -= 2; sum -= 100000; } else if (list[0].Count != 0) { sum = 0; } else { sum = 0; numOfb1 = 0; Console.WriteLine("Error!"); } }
+
             while (sum >= 100000)
-            {if (numOfb1 >= 2) { numOfb2++; numOfb1 -= 2; sum -= 100000; } }
+            { if (numOfb1 >= 2 && list[1].Count != 0) { numOfb2++; numOfb1 -= 2; sum -= 100000; } else if (list[1].Count == 0 && list[0].Count != 0) { sum = 0; } else { sum = 0; Console.WriteLine("Error!"); } }
              list[2].Count -= numOfb3; list[1].Count -= numOfb2; list[0].Count -= numOfb1;
 
-            Console.WriteLine(numOfb1.ToString() +  " " + numOfb2.ToString() + " " + numOfb3.ToString() );
-            foreach (Cassete c in list)
-            {
-                Console.WriteLine(c.Count.ToString());
-            }
+            Console.WriteLine(list[0].banknote.Name + " " + numOfb1.ToString() +  '\n' +list[1].banknote.Name + " " + numOfb2.ToString() + '\n' + list[1].banknote.Name +" " + numOfb3.ToString());
            
             return num;
         }
