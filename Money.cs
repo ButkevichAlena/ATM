@@ -8,6 +8,6 @@ namespace ATMСonsole
 {
     public class Money
     {
-        public List<KeyValuePair<Banknote, int>> Banknotes = new List<KeyValuePair<Banknote, int>>();
+        public Dictionary<Banknote, int> Banknotes = new Dictionary <Banknote, int>();
     }
 }

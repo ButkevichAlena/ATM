@@ -8,7 +8,9 @@ namespace ATMСonsole
 {
     public class ATM
     {
-       
+
+        Money money = new Money();
+
         public List<Cassete> list = new List<Cassete>();
 
         public void toFill(List<string> slist)
@@ -32,11 +34,7 @@ namespace ATMСonsole
 
         public Money toSplitSum(int sum,  int max)
         {
-            Money money = new Money();
-
-            sum = 120;
-            max = 1000000000;
-
+            
             int[] F = new int[sum + 1];
             F[0] = 0;
 
@@ -54,7 +52,7 @@ namespace ATMСonsole
             int[] num = new int[list.Count];
             for (int l = 0; l < list.Count; l++)
             {
-                num[l] = 0;
+                num[l] = 1;
             }
 
             if (F[sum] == max)
@@ -67,7 +65,10 @@ namespace ATMСonsole
                     {
                         if (F[sum - list[i].banknote.Nominal] == F[sum] - 1)
                         {
-                            money.Banknotes.Add(new KeyValuePair<Banknote, int>(list[i].banknote, num[i]));
+                            if (!money.Banknotes.ContainsKey(list[i].banknote))
+                            { money.Banknotes.Add(list[i].banknote, num[i]); }
+                            else { money.Banknotes[list[i].banknote] = num[i]; }
+                            
                             sum -= list[i].banknote.Nominal; num[i]++;
                             break;
                         }
@@ -76,6 +77,14 @@ namespace ATMСonsole
             }
 
             return money;
+        }
+
+        public void toGiveMoney()
+        {
+            foreach (KeyValuePair<Banknote, int> i in money.Banknotes)
+            {
+                Console.WriteLine(i.Key.Nominal + "\t" + i.Value);
+            }
         }
     }
 }
