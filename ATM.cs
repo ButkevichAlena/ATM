@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ATMСonsole
 {
@@ -68,8 +69,9 @@ namespace ATMСonsole
                             if (!money.Banknotes.ContainsKey(list[i].banknote))
                             { money.Banknotes.Add(list[i].banknote, num[i]); }
                             else { money.Banknotes[list[i].banknote] = num[i]; }
-                            
-                            sum -= list[i].banknote.Nominal; num[i]++;
+
+                            sum -= list[i].banknote.Nominal; list[i].Count--; num[i]++;
+
                             break;
                         }
                     }
@@ -77,6 +79,16 @@ namespace ATMСonsole
             }
 
             return money;
+        }
+
+        public void writeToFile(string FileName)
+        {
+            using (StreamWriter writer = new StreamWriter(FileName, false))
+            {
+                foreach (Cassete cs in list)
+                { writer.Write(cs.ToString()); }
+
+            }
         }
 
         public void toGiveMoney()
