@@ -11,19 +11,21 @@ namespace ATMСonsole
     {
         static void Main(string[] args)
         {
+            string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
             Reader reader = new Reader();
-            reader.Read();
+;
             ATM atm = new ATM();
-            atm.Create(reader.Read());
+            atm.toFill(reader.Read(FileName));
 
-            atm.distributionOfBanknotes(500000);
-
-            using (StreamWriter writer = new StreamWriter(@"C:\Users\NotePad.by\Desktop\Money.txt", false))
+            using (StreamWriter writer = new StreamWriter(FileName, false))
             {
                 foreach (Cassete cs in atm.list)
                 { writer.Write(cs.ToString()); }      
             }
 
+            int sum = 120; int max = 1000000000;
+
+            atm.toSplitSum(sum, max);
  
         }
  
