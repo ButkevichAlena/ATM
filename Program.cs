@@ -12,20 +12,45 @@ namespace ATMСonsole
         static void Main(string[] args)
         {
             string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
-            Reader reader = new Reader();
-;
+            FileProceess fileProcess = new FileProceess();
+            
+
             ATM atm = new ATM();
-            atm.toFill(reader.Read(FileName));
 
-            int sum = 540; int max = 1000000000;
+            
+            atm.list = fileProcess.Read(FileName);
 
-            atm.toSplitSum(sum, max);
+            for (int g = 0; g < atm.list.Count; g++)
+            {
+                Cassete cassete = new Cassete(atm.list[g].banknote.Nominal.ToString(), atm.list[g].Count); atm.buferlist.Add(cassete);
+            }
 
-            atm.toGiveMoney();
+            bool flag = false; int max = 1000000;
 
-            atm.writeToFile(FileName);
- 
+            while (flag != true)
+             {
+                 Console.WriteLine("Input sum");
+
+                 string s = Console.ReadLine();
+
+                 int sum = Convert.ToInt32(s);
+
+                 atm.toSplitSum(sum, max);
+
+                 while (!atm.Check(sum, max)) { atm.toSplitSum(sum, max); }
+                 atm.toGiveMoney();
+
+                 Console.WriteLine("Repeat??");
+
+                 s = Console.ReadLine();
+
+                 if (s == "yes") { flag = false; }
+
+                 else flag = true;
+             }
+
+            fileProcess.writeToFile(FileName, atm.list);
+         
         }
- 
     }
 }

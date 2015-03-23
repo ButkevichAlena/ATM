@@ -8,6 +8,6 @@ namespace ATMСonsole
 {
     public class Banknote
     {
-        public string Name { get; set; }
+        public int Nominal { get; set; }
     }
 }
