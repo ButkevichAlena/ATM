@@ -9,7 +9,8 @@ namespace ATMСonsole
 {
     class Program
     {
-        static void Main(string[] args)
+
+            static void Main(string[] args)
         {
             string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
             FileProceess fileProcess = new FileProceess();
@@ -35,10 +36,16 @@ namespace ATMСonsole
 
                  int sum = Convert.ToInt32(s);
 
-                 atm.toSplitSum(sum, max);
+                 if (atm.IsValid(sum, max))
+                 {
+                     atm.toSplitSum(sum, max);
 
-                 while (!atm.Check(sum, max)) { atm.toSplitSum(sum, max); }
-                 atm.toGiveMoney();
+                     while (!atm.Check(sum, max)) { atm.toSplitSum(sum, max); }
+
+                     atm.toGiveMoney();
+                 }
+
+                 else Console.WriteLine("Невозможно выдать деньги");
 
                  Console.WriteLine("Repeat??");
 
@@ -53,4 +60,5 @@ namespace ATMСonsole
          
         }
     }
-}
+         
+        }

@@ -9,12 +9,32 @@ namespace ATMСonsole
 {
     public class ATM
     {
-
-        public  Money money = new Money();
+        public Money money = new Money();
 
         public List<Cassete> list = new List<Cassete>();
-        public List<Cassete> buferlist = new List<Cassete>();  
-        
+        public List<Cassete> buferlist = new List<Cassete>();
+
+        public bool IsValid(int sum, int bufer)
+        {
+            bool flag = true;
+            int[] F = new int[sum + 1];
+            F[0] = 0;
+
+            int m, i;
+            for (m = 1; m <= sum; ++m)
+            {
+                F[m] = bufer;
+                for (i = 0; i < buferlist.Count; ++i)
+                {
+                    if (m >= buferlist[i].banknote.Nominal && F[m - buferlist[i].banknote.Nominal] + 1 < F[m] && buferlist[i].Count > 0)
+                        F[m] = F[m - buferlist[i].banknote.Nominal] + 1;
+                }
+            }
+
+            if (F[sum] == bufer) { flag = false; }
+            return flag;
+        }
+
         public Money toSplitSum(int sum, int bufer)
         {
             buferlist.Sort();
@@ -40,12 +60,8 @@ namespace ATMСonsole
                 num[l] = 1;
             }
 
-            if (F[sum] == bufer)
-                Console.WriteLine("Требуемую сумму выдать невозможно");
-            else if (F[sum] == bufer + 1)
-            {
-                Console.WriteLine("Недостаточно купюр в банкомате");
-            }
+            if (F[sum] == bufer + 1)
+                Console.WriteLine("нет купюр");
             else
             {
                 while (sum > 0)
@@ -67,7 +83,7 @@ namespace ATMСonsole
                 }
             }
             return money;
-        } 
+        }
 
         public bool Check(int sum, int bufer)
         {
@@ -75,8 +91,8 @@ namespace ATMСonsole
 
             for (int i = 0; i < buferlist.Count; ++i)
             {
-                if (buferlist[i].Count < 0) { buferlist.Remove(buferlist[i]); flag = false;  } 
-            }        
+                if (buferlist[i].Count < 0) { buferlist.Remove(buferlist[i]); flag = false; }
+            }
             return flag;
         }
 
@@ -88,13 +104,13 @@ namespace ATMСonsole
                 {
                     for (int k = 0; k < list.Count; k++)
                     {
-                        if (list[k].banknote.Nominal == buferlist[j].banknote.Nominal) { string s = buferlist[j].banknote.Nominal.ToString(); int cl = buferlist[j].Count; Cassete c = new Cassete(s, cl); list.Remove(list[k]); list.Add(c); } 
+                        if (list[k].banknote.Nominal == buferlist[j].banknote.Nominal) { string s = buferlist[j].banknote.Nominal.ToString(); int cl = buferlist[j].Count; Cassete c = new Cassete(s, cl); list.Remove(list[k]); list.Add(c); }
                     }
 
                 }
 
             }
-            
+
             foreach (KeyValuePair<Banknote, int> i in money.Banknotes)
             {
                 Console.WriteLine(i.Key.Nominal + "\t" + i.Value);
@@ -107,7 +123,7 @@ namespace ATMСonsole
             {
                 Cassete cassete = new Cassete(list[g].banknote.Nominal.ToString(), list[g].Count); buferlist.Add(cassete);
             }
-            
+
         }
     }
 }
