@@ -10,20 +10,19 @@ namespace ATMСonsole
     class Program
     {
 
-            static void Main(string[] args)
+
+        static void Main(string[] args)
         {
             string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
             FileProceess fileProcess = new FileProceess();
-            
-
+                       
             ATM atm = new ATM();
-
-            
+                      
             atm.list = fileProcess.Read(FileName);
 
-            for (int g = 0; g < atm.list.Count; g++)
+            for (int i = 0; i < atm.list.Count; i++)
             {
-                Cassete cassete = new Cassete(atm.list[g].banknote.Nominal.ToString(), atm.list[g].Count); atm.buferlist.Add(cassete);
+                Cassete cassete = new Cassete(atm.list[i].banknote.Nominal.ToString(), atm.list[i].Count); atm.buferList.Add(cassete);
             }
 
             bool flag = false; int max = 1000000;
@@ -38,14 +37,17 @@ namespace ATMСonsole
 
                  if (atm.IsValid(sum, max))
                  {
-                     atm.toSplitSum(sum, max);
+                     atm.WithdrawMoney(sum, max);
 
-                     while (!atm.Check(sum, max)) { atm.toSplitSum(sum, max); }
+                     while (!atm.Check(sum, max)) { atm.WithdrawMoney(sum, max); }
 
-                     atm.toGiveMoney();
+                     if (atm.error == ErrorType.NotEnoughMoney) Console.WriteLine("Недостаточно купюр");
+
+                     atm.ChangeCassetes(); Console.WriteLine(atm.money.ToString());
+
                  }
 
-                 else Console.WriteLine("Невозможно выдать деньги");
+                 else if (atm.error == ErrorType.IsNotValid )Console.WriteLine("Невозможно выдать деньги");             
 
                  Console.WriteLine("Repeat??");
 
@@ -60,5 +62,6 @@ namespace ATMСonsole
          
         }
     }
+
          
-        }
+}

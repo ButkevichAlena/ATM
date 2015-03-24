@@ -12,118 +12,63 @@ namespace ATMСonsole
         public Money money = new Money();
 
         public List<Cassete> list = new List<Cassete>();
-        public List<Cassete> buferlist = new List<Cassete>();
+        public List<Cassete> buferList = new List<Cassete>();
 
-        public bool IsValid(int sum, int bufer)
-        {
-            bool flag = true;
-            int[] F = new int[sum + 1];
-            F[0] = 0;
+        Algorithm algorithm = new Algorithm();
 
-            int m, i;
-            for (m = 1; m <= sum; ++m)
-            {
-                F[m] = bufer;
-                for (i = 0; i < buferlist.Count; ++i)
-                {
-                    if (m >= buferlist[i].banknote.Nominal && F[m - buferlist[i].banknote.Nominal] + 1 < F[m] && buferlist[i].Count > 0)
-                        F[m] = F[m - buferlist[i].banknote.Nominal] + 1;
-                }
-            }
-
-            if (F[sum] == bufer) { flag = false; }
-            return flag;
-        }
-
-        public Money toSplitSum(int sum, int bufer)
-        {
-            buferlist.Sort();
-            money.Banknotes.Clear();
-
-            int[] F = new int[sum + 1];
-            F[0] = 0;
-
-            int m, i;
-            for (m = 1; m <= sum; ++m)
-            {
-                F[m] = bufer + 1;
-                for (i = 0; i < buferlist.Count; ++i)
-                {
-                    if (m >= buferlist[i].banknote.Nominal && F[m - buferlist[i].banknote.Nominal] + 1 < F[m] && buferlist[i].Count > 0)
-                        F[m] = F[m - buferlist[i].banknote.Nominal] + 1;
-                }
-            }
-
-            int[] num = new int[buferlist.Count];
-            for (int l = 0; l < buferlist.Count; l++)
-            {
-                num[l] = 1;
-            }
-
-            if (F[sum] == bufer + 1)
-                Console.WriteLine("нет купюр");
-            else
-            {
-                while (sum > 0)
-                {
-                    for (i = 0; i < buferlist.Count; ++i)
-                    {
-                        if (F[sum - buferlist[i].banknote.Nominal] == F[sum] - 1)
-                        {
-
-                            if (!money.Banknotes.ContainsKey(buferlist[i].banknote))
-                            { money.Banknotes.Add(buferlist[i].banknote, num[i]); }
-                            else { money.Banknotes[buferlist[i].banknote] = num[i]; }
-
-                            sum -= buferlist[i].banknote.Nominal; buferlist[i].Count--; num[i]++;
-
-                            break;
-                        }
-                    }
-                }
-            }
-            return money;
-        }
-
+        public ErrorType error { get; set; }
+       
         public bool Check(int sum, int bufer)
         {
             bool flag = true;
 
-            for (int i = 0; i < buferlist.Count; ++i)
+            for (int i = 0; i < buferList.Count; ++i)
             {
-                if (buferlist[i].Count < 0) { buferlist.Remove(buferlist[i]); flag = false; }
+                if (buferList[i].Count < 0) { buferList.Remove(buferList[i]); flag = false; }
             }
             return flag;
         }
 
-        public void toGiveMoney()
+        public Money WithdrawMoney(int sum, int bufer)
         {
-            if (buferlist.Count != 0)
+            
+            money = algorithm.GetMoney(sum, bufer, buferList, algorithm.SplitSum(sum, bufer, buferList, money), money);
+            error = algorithm.error;
+            return money;
+        }
+
+        public bool IsValid(int sum, int bufer)
+        {
+            
+            bool f;
+
+            f = algorithm.IsAlgorithmValid(sum, bufer, buferList);
+            error = algorithm.error;
+
+            return f;
+        }
+
+        public void ChangeCassetes()
+        {
+            if (buferList.Count != 0)
             {
-                for (int j = 0; j < buferlist.Count; j++)
+                for (int j = 0; j < buferList.Count; j++)
                 {
                     for (int k = 0; k < list.Count; k++)
                     {
-                        if (list[k].banknote.Nominal == buferlist[j].banknote.Nominal) { string s = buferlist[j].banknote.Nominal.ToString(); int cl = buferlist[j].Count; Cassete c = new Cassete(s, cl); list.Remove(list[k]); list.Add(c); }
+                        if (list[k].banknote.Nominal == buferList[j].banknote.Nominal) { string s = buferList[j].banknote.Nominal.ToString(); int cl = buferList[j].Count; Cassete c = new Cassete(s, cl); list.Remove(list[k]); list.Add(c); }
                     }
 
-                }
-
-            }
-
-            foreach (KeyValuePair<Banknote, int> i in money.Banknotes)
-            {
-                Console.WriteLine(i.Key.Nominal + "\t" + i.Value);
+              }
             }
 
             list.Sort();
 
-            buferlist.Clear();
+            buferList.Clear();
             for (int g = 0; g < list.Count; g++)
             {
-                Cassete cassete = new Cassete(list[g].banknote.Nominal.ToString(), list[g].Count); buferlist.Add(cassete);
+                Cassete cassete = new Cassete(list[g].banknote.Nominal.ToString(), list[g].Count); buferList.Add(cassete);
             }
-
         }
     }
 }
