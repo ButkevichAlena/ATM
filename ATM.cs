@@ -11,41 +11,42 @@ namespace ATMСonsole
     {
         public Money money = new Money();
 
-        public List<Cassete> list = new List<Cassete>();
+        public List<Cassete> listOfCassete = new List<Cassete>();
         public List<Cassete> buferList = new List<Cassete>();
 
         Algorithm algorithm = new Algorithm();
 
+        int bufer = 10000000;
+        int max = 2;
+
         public ErrorType error { get; set; }
        
-        public bool Check(int sum, int bufer)
+        public Money WithdrawMoney(int sum)
         {
-            bool flag = true;
-
-            for (int i = 0; i < buferList.Count; ++i)
+            if (IsValid(sum))
             {
-                if (buferList[i].Count < 0) { buferList.Remove(buferList[i]); flag = false; }
-            }
-            return flag;
-        }
+                money = algorithm.GetMoney(sum, bufer, buferList, algorithm.SplitSum(sum, bufer, buferList, money), money);
 
-        public Money WithdrawMoney(int sum, int bufer)
-        {
-            
-            money = algorithm.GetMoney(sum, bufer, buferList, algorithm.SplitSum(sum, bufer, buferList, money), money);
-            error = algorithm.error;
+                if (algorithm.summaryCount <= max)
+                {
+                    error = algorithm.error;
+                }
+                else error = ErrorType.MoreThanMax;
+                ChangeCassetes();
+            }
+            else error = ErrorType.IsNotValid;
             return money;
         }
 
-        public bool IsValid(int sum, int bufer)
+        public bool IsValid(int sum)
         {
             
-            bool f;
+            bool isValid;
 
-            f = algorithm.IsAlgorithmValid(sum, bufer, buferList);
+            isValid = algorithm.IsAlgorithmValid(sum, bufer, buferList);
             error = algorithm.error;
 
-            return f;
+            return isValid;
         }
 
         public void ChangeCassetes()
@@ -54,21 +55,38 @@ namespace ATMСonsole
             {
                 for (int j = 0; j < buferList.Count; j++)
                 {
-                    for (int k = 0; k < list.Count; k++)
+                    for (int k = 0; k < listOfCassete.Count; k++)
                     {
-                        if (list[k].banknote.Nominal == buferList[j].banknote.Nominal) { string s = buferList[j].banknote.Nominal.ToString(); int cl = buferList[j].Count; Cassete c = new Cassete(s, cl); list.Remove(list[k]); list.Add(c); }
+                        if (listOfCassete[k].banknote.Nominal == buferList[j].banknote.Nominal) { listOfCassete[k].Count = buferList[j].Count; } 
                     }
 
               }
             }
 
-            list.Sort();
+            listOfCassete.Sort();
 
             buferList.Clear();
-            for (int g = 0; g < list.Count; g++)
+            for (int g = 0; g < listOfCassete.Count; g++)
             {
-                Cassete cassete = new Cassete(list[g].banknote.Nominal.ToString(), list[g].Count); buferList.Add(cassete);
+                Cassete cassete = new Cassete(listOfCassete[g].banknote.Nominal.ToString(), listOfCassete[g].Count); buferList.Add(cassete);
             }
+        }
+
+        public void InsertCassete(List<Cassete> list)
+        {
+            this.listOfCassete = list;
+            for (int i = 0; i < list.Count; i++)
+            {
+                Cassete cassete = new Cassete(list[i].banknote.Nominal.ToString(), list[i].Count); buferList.Add(cassete);
+            }
+        }
+
+        public bool CheckMax(int summaryCount)
+        {
+            bool flag = false;
+
+            if (summaryCount > max) flag = true;
+            return flag;
         }
     }
 }

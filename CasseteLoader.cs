@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ATMСonsole
 {
-    class FileProceess
+    class CasseteLoader
     {
         public List<Cassete> Read(string FileName)
         {
@@ -44,17 +44,5 @@ namespace ATMСonsole
 
             return newlist;
         }
-
-        public void writeToFile(string FileName, List<Cassete> list)
-        {
-            using (StreamWriter writer = new StreamWriter(FileName, false))
-            {
-                foreach (Cassete cs in list)
-                {
-                    writer.Write(cs.ToString());
-                }
-            }
-        }
-
     }
 }

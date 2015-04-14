@@ -8,8 +8,9 @@ namespace ATMСonsole
 {
     public enum ErrorType
     {
-
+        Ok,
         IsNotValid,
         NotEnoughMoney,
+        MoreThanMax,
     }
 }

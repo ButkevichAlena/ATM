@@ -9,31 +9,34 @@ namespace ATMСonsole
     class Algorithm
     {
         public ErrorType error = new ErrorType();
+        public int summaryCount;
+
 
         public int[] SplitSum(int sum, int bufer, List<Cassete> buferList, Money money)
         {
+
             buferList.Sort();
             money.Banknotes.Clear();
 
             int[] F = new int[sum + 1];
-            F[0] = 0;
-
             int m, i;
+
             for (m = 1; m <= sum; ++m)
             {
                 F[m] = bufer + 1;
                 for (i = 0; i < buferList.Count; ++i)
                 {
-                    if (m >= buferList[i].banknote.Nominal && F[m - buferList[i].banknote.Nominal] + 1 < F[m])
-                        F[m] = F[m - buferList[i].banknote.Nominal] + 1;
+                    if (m >= buferList[i].banknote.Nominal && F[m - buferList[i].banknote.Nominal] + 1 < F[m] && buferList[i].Count > 0)
+                        F[m] = F[m - buferList[i].banknote.Nominal] + 1; 
                 }
             }
+
             return F;
         }
 
         public Money GetMoney (int sum, int bufer, List<Cassete> buferlist, int[] F, Money money)
         {
-            
+            summaryCount = 0;
             int[] num = new int[buferlist.Count];
             for (int l = 0; l < buferlist.Count; l++)
             {
@@ -41,9 +44,10 @@ namespace ATMСonsole
             }
 
             if (F[sum] == bufer + 1)
-                error = ErrorType.NotEnoughMoney;
+                error = ErrorType.NotEnoughMoney; 
             else
             {
+                error = ErrorType.Ok;
                 while (sum > 0)
                 {
                     for (int i = 0; i < buferlist.Count; ++i)
@@ -55,7 +59,7 @@ namespace ATMСonsole
                             { money.Banknotes.Add(buferlist[i].banknote, num[i]); }
                             else { money.Banknotes[buferlist[i].banknote] = num[i]; }
 
-                            sum -= buferlist[i].banknote.Nominal; buferlist[i].Count--; num[i]++;
+                            sum -= buferlist[i].banknote.Nominal; buferlist[i].Count--; num[i]++; summaryCount++;
 
                             break;
                         }
