@@ -4,37 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using log4net;
 
 namespace ATMСonsole
 {
     public class ATM
     {
+        static readonly ILog log = LogManager.GetLogger(typeof(ATM)); 
+
         public Money money = new Money();
 
         public List<Cassete> listOfCassete = new List<Cassete>();
         public List<Cassete> buferList = new List<Cassete>();
+        public MoneyConverterToString converter;
 
         Algorithm algorithm = new Algorithm();
 
         int bufer = 10000000;
-        int max = 2;
+        int max = 100;
 
-        public ErrorType error { get; set; }
+        public ATMState state { get; set; }
        
-        public Money WithdrawMoney(int sum)
+        public Money WithdrawnMoney(int sum)
         {
-            if (IsValid(sum))
+            if (sum <= 0) state = ATMState.IsNotValid;
+            else if (IsValid(sum))
             {
                 money = algorithm.GetMoney(sum, bufer, buferList, algorithm.SplitSum(sum, bufer, buferList, money), money);
 
                 if (algorithm.summaryCount <= max)
                 {
-                    error = algorithm.error;
+                    state = algorithm.state;
                 }
-                else error = ErrorType.MoreThanMax;
+                else state = ATMState.MoreThanMax;
                 ChangeCassetes();
             }
-            else error = ErrorType.IsNotValid;
+            else state = ATMState.ImpossibleToCollectSum;
+
+            log.Debug("Operation state is " + state.ToString());
+            if (state == ATMState.Ok)
+            {
+                log.Debug("Withdrawn money: " + money.ToString());
+            }
+            log.Debug("Current state of cassettes: " + converter.ConvertMoneyInCassetes(listOfCassete));
+
             return money;
         }
 
@@ -44,7 +57,7 @@ namespace ATMСonsole
             bool isValid;
 
             isValid = algorithm.IsAlgorithmValid(sum, bufer, buferList);
-            error = algorithm.error;
+            state = algorithm.state;
 
             return isValid;
         }
@@ -79,6 +92,9 @@ namespace ATMСonsole
             {
                 Cassete cassete = new Cassete(list[i].banknote.Nominal.ToString(), list[i].Count); buferList.Add(cassete);
             }
+
+            converter = new MoneyConverterToString();
+            log.Debug("Insert cassettes: " + converter.ConvertMoneyInCassetes(list));
         }
 
         public bool CheckMax(int summaryCount)

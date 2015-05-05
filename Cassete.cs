@@ -28,7 +28,7 @@ namespace ATMСonsole
 
         public override string ToString()
         {
-            return banknote.Nominal + " " + Count + '\n';
+            return banknote.Nominal + " - " + Count + " ";
         }
     }
 }

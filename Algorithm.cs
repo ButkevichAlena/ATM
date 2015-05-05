@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 
 namespace ATMСonsole
 {
     class Algorithm
     {
-        public ErrorType error = new ErrorType();
+        public ATMState state = new ATMState();
+
         public int summaryCount;
 
+        static readonly ILog log = LogManager.GetLogger(typeof(Algorithm)); 
 
         public int[] SplitSum(int sum, int bufer, List<Cassete> buferList, Money money)
         {
+            log.Debug("Start to find more effective way to collect baknotes.");
 
             buferList.Sort();
             money.Banknotes.Clear();
@@ -44,10 +48,13 @@ namespace ATMСonsole
             }
 
             if (F[sum] == bufer + 1)
-                error = ErrorType.NotEnoughMoney; 
+            {
+                state = ATMState.NotEnoughMoney;
+                log.Debug("Algorithm can't to collect requered sum");
+            }
             else
             {
-                error = ErrorType.Ok;
+                state = ATMState.Ok;
                 while (sum > 0)
                 {
                     for (int i = 0; i < buferlist.Count; ++i)
@@ -66,6 +73,7 @@ namespace ATMСonsole
                     }
                 }
             }
+            log.Debug("Algorithm collected requered sum: " + money.ToString());
             return money;
         }
 
@@ -86,7 +94,12 @@ namespace ATMСonsole
                 }
             }
 
-            if (F[sum] == bufer + 1) { flag = false; error = ErrorType.IsNotValid; }
+            if (F[sum] == bufer + 1) 
+            {
+                flag = false;
+                state = ATMState.ImpossibleToCollectSum;
+                log.Debug("Algorithm can't to collect requered sum");
+            }
             return flag;
         }
     }

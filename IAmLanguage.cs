@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace ATMСonsole
 {
-    public enum ErrorType
+    interface IAmLanguage
     {
-        Ok,
-        IsNotValid,
-        NotEnoughMoney,
-        MoreThanMax,
+        string AskForSum { get; }
+
+        string AnswerOfATM (ATMState state);
+
+        string AskForContinueOrExit { get; }
     }
 }

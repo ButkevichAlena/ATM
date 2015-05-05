@@ -3,27 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using log4net;
 
 namespace ATMСonsole
 {
     class Program
     {
+        public static readonly ILog log = LogManager.GetLogger(typeof(Program));
+
+        static string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
+
         static void Main(string[] args)
         {
-            string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
+
+            log4net.Config.XmlConfigurator.Configure(); 
+
             CasseteLoader casseteLoader = new CasseteLoader();
 
+            English language = new English();
+
             ATM atm = new ATM();
-            Money money = new Money();
 
             atm.InsertCassete(casseteLoader.Read(FileName));
-            bool flag = false;
-            ErrorType state;
+     
+            ATMState state;
 
-            while (flag != true)
+            while (true)
             {
-                Console.WriteLine("Input sum");
+                Console.WriteLine(language.AskForSum);
 
                 string s = Console.ReadLine();
 
@@ -31,81 +38,45 @@ namespace ATMСonsole
                 {
                     int sum = Convert.ToInt32(s);
 
-                    CheckInput(sum);
+                    log.Info("Sum requered by the user: " + sum.ToString());
 
-                    atm.WithdrawMoney(sum);
+                    atm.WithdrawnMoney(sum);
                     
-                    state = atm.error;
+                    state = atm.state;
 
-                    if (state == ErrorType.IsNotValid) Console.WriteLine("Invalid sum! Look through possible banknotes!");
-                    else if (state == ErrorType.MoreThanMax) Console.WriteLine("More than max count of banknotes!");
-                    else if (state == ErrorType.NotEnoughMoney) Console.WriteLine("Not enough money!");
-                    else if (state == ErrorType.Ok)
+                    Console.WriteLine(language.AnswerOfATM(state));
+
+                    if (state == ATMState.Ok)
                     {
-                        money = atm.money;
+                        Money money = atm.money;
                         Console.WriteLine(money.ToString());
                     }
                 }
+                catch (System.FormatException e)
+                {
+                    Console.WriteLine(language.InvalidFormat);
+                }
 
-                catch (System.FormatException ex)
+                Console.Write (language.AskForContinueOrExit);
+
+                while (true)
                 {
-                    Console.WriteLine("Error! Invalid format! Enter integer!");
+                    ConsoleKey key = Console.ReadKey().Key;
+
+                    if (key == ConsoleKey.Escape)
+                    {
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    if (key == ConsoleKey.Enter)
+                    {
+                        break;
+                    }
                 }
-                catch (System.Exception e)
-                {
-                    Console.WriteLine("Error!" + e.Message);
-                }
-                Console.WriteLine("Repeat??");
 
                 s = Console.ReadLine();
-
-                if (s == "yes" || s == "Yes" || s == "YES") { flag = false; }
-
-                else { flag = true; break; }
             }
-        }
-
-          /*  if (CheckMax(sum, max))
-            {
-                if (atm.IsValid(sum, max))
-                {
-                    atm.WithdrawMoney(sum, max);
-
-                    if (atm.error == ErrorType.NotEnoughMoney)
-                    {
-                        state = ErrorType.NotEnoughMoney;
-                    }
-                    else
-                    {
-                        atm.ChangeCassetes();
-                        money = atm.money;
-                    }
-                }
-                else
-                {
-                    state = ErrorType.IsNotValid;
-                }
-            }
-            else
-            {
-                state = ErrorType.NotEnoughMoney;
-            }
-
-            money = atm.WithdrawMoney1(sum);
-            if (atm.State == ErrorType.Ok)
-            {
-
-            }
-            else
-            {
-                // print error message
-            }
-
-        }*/
-
-        static void CheckInput(int sum)
-        {
-            if (sum <= 0) throw new System.Exception("Incorrect input!");
         }
     }         
 }

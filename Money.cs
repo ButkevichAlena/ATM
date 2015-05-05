@@ -16,7 +16,7 @@ namespace ATMСonsole
 
             foreach (KeyValuePair<Banknote, int> i in Banknotes)
             {
-               s.Append (i.Key.Nominal.ToString() + "\t" + i.Value.ToString() + '\n');
+               s.Append (i.Key.Nominal.ToString() + " - " + i.Value.ToString() + '\t');
             }
 
             return s.ToString();
