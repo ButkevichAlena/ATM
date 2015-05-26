@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ATMLibrary.MoneyEmulator;
 
-namespace ATMСonsole
+namespace ATMLibrary.Cassetes
 {
     public class Cassete: IComparable
     {
@@ -20,10 +21,10 @@ namespace ATMСonsole
         public int CompareTo(object obj)
         {
             if (obj == null) return 1;
-           Cassete otherCassete = obj as Cassete;
-           if (otherCassete != null)
-               return this.banknote.Nominal.CompareTo(otherCassete.banknote.Nominal);
-           else { return -1; }
+            Cassete otherCassete = obj as Cassete;
+            if (otherCassete != null)
+                return this.banknote.Nominal.CompareTo(otherCassete.banknote.Nominal);
+            else { return -1; }
         }
 
         public override string ToString()

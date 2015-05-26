@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ATMLibrary;
 
-namespace ATMСonsole
+namespace LanguageInterface
 {
-    interface IAmLanguage
+    public interface IAmLanguage
     {
         string AskForSum { get; }
 
-        string AnswerOfATM (ATMState state);
+        string AnswerOfATM(ATMState state);
 
         string AskForContinueOrExit { get; }
     }

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ATMLibrary;
 
-namespace ATMСonsole
+namespace LanguageInterface
 {
-    class Russian: IAmLanguage
+    public class Russian: IAmLanguage
     {
         private string sum = "Введите сумму";
 
@@ -26,15 +27,15 @@ namespace ATMСonsole
             {ATMState.IsNotValid, "Некорректно введена сумма."}
         };
 
-        public string AnswerOfATM (ATMState state)
+        public string AnswerOfATM(ATMState state)
         {
             return stateMap[state];
         }
 
         public string AskForContinueOrExit
         {
-            get 
-            { 
+            get
+            {
                 return "Продолжить??? (Esc - выйти, Enter - продолжить)";
             }
         }

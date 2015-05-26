@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using ATMLibrary.MoneyEmulator;
 
-namespace ATMСonsole
+namespace ATMLibrary.Cassetes
 {
-    class CasseteLoader
+    public class CasseteLoader
     {
         public List<Cassete> Read(string FileName)
         {
@@ -37,7 +38,7 @@ namespace ATMСonsole
                 Cassete cassete = new Cassete(banknote.Nominal.ToString(), count);
                 Cassete newcassete = new Cassete(banknote.Nominal.ToString(), count);
 
-                newlist.Add(cassete); 
+                newlist.Add(cassete);
             }
 
             file.Close();

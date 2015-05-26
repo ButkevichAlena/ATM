@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ATMСonsole
+namespace ATMLibrary.MoneyEmulator
 {
     public class Money
     {
-        public Dictionary<Banknote, int> Banknotes = new Dictionary <Banknote, int>();
+        public Dictionary<Banknote, int> Banknotes = new Dictionary<Banknote, int>();
 
         public override string ToString()
         {
@@ -16,7 +16,7 @@ namespace ATMСonsole
 
             foreach (KeyValuePair<Banknote, int> i in Banknotes)
             {
-               s.Append (i.Key.Nominal.ToString() + " - " + i.Value.ToString() + '\t');
+                s.Append(i.Key.Nominal.ToString() + " - " + i.Value.ToString() + '\t');
             }
 
             return s.ToString();

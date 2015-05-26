@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using ATMLibrary;
+using LanguageInterface;
 
 namespace ATMСonsole
 {
@@ -11,21 +13,21 @@ namespace ATMСonsole
     {
         public static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
-        static string FileName = @"C:\Users\NotePad.by\Desktop\Money.txt";
+        static string FileName = "D:\\money.txt";
 
         static void Main(string[] args)
         {
 
-            log4net.Config.XmlConfigurator.Configure(); 
+            log4net.Config.XmlConfigurator.Configure();
 
             CasseteLoader casseteLoader = new CasseteLoader();
 
             English language = new English();
 
-            ATM atm = new ATM();
+            ATMLibrary.ATM atm = new ATMLibrary.ATM();
 
             atm.InsertCassete(casseteLoader.Read(FileName));
-     
+
             ATMState state;
 
             while (true)
@@ -41,7 +43,7 @@ namespace ATMСonsole
                     log.Info("Sum requered by the user: " + sum.ToString());
 
                     atm.WithdrawnMoney(sum);
-                    
+
                     state = atm.state;
 
                     Console.WriteLine(language.AnswerOfATM(state));
@@ -57,7 +59,7 @@ namespace ATMСonsole
                     Console.WriteLine(language.InvalidFormat);
                 }
 
-                Console.Write (language.AskForContinueOrExit);
+                Console.Write(language.AskForContinueOrExit);
 
                 while (true)
                 {
@@ -78,5 +80,5 @@ namespace ATMСonsole
                 s = Console.ReadLine();
             }
         }
-    }         
+    }
 }

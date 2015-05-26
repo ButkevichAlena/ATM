@@ -3,28 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using log4net;
+using ATMLibrary.MoneyEmulator;
+using ATMLibrary.Cassetes;
 
-namespace ATMСonsole
+
+namespace ATMLibrary.Emulator
 {
     public class ATM
     {
-        static readonly ILog log = LogManager.GetLogger(typeof(ATM)); 
+        static readonly ILog log = LogManager.GetLogger(typeof(ATM));
 
         public Money money = new Money();
 
         public List<Cassete> listOfCassete = new List<Cassete>();
         public List<Cassete> buferList = new List<Cassete>();
-        public MoneyConverterToString converter;
+        public CasseteConverterToString converter;
 
         Algorithm algorithm = new Algorithm();
+       
 
         int bufer = 10000000;
         int max = 100;
 
         public ATMState state { get; set; }
-       
+
         public Money WithdrawnMoney(int sum)
         {
             if (sum <= 0) state = ATMState.IsNotValid;
@@ -40,11 +43,11 @@ namespace ATMСonsole
                 ChangeCassetes();
             }
             else state = ATMState.ImpossibleToCollectSum;
-
             log.Debug("Operation state is " + state.ToString());
             if (state == ATMState.Ok)
             {
                 log.Debug("Withdrawn money: " + money.ToString());
+              
             }
             log.Debug("Current state of cassettes: " + converter.ConvertMoneyInCassetes(listOfCassete));
 
@@ -53,7 +56,7 @@ namespace ATMСonsole
 
         public bool IsValid(int sum)
         {
-            
+
             bool isValid;
 
             isValid = algorithm.IsAlgorithmValid(sum, bufer, buferList);
@@ -70,10 +73,10 @@ namespace ATMСonsole
                 {
                     for (int k = 0; k < listOfCassete.Count; k++)
                     {
-                        if (listOfCassete[k].banknote.Nominal == buferList[j].banknote.Nominal) { listOfCassete[k].Count = buferList[j].Count; } 
+                        if (listOfCassete[k].banknote.Nominal == buferList[j].banknote.Nominal) { listOfCassete[k].Count = buferList[j].Count; }
                     }
 
-              }
+                }
             }
 
             listOfCassete.Sort();
@@ -93,7 +96,7 @@ namespace ATMСonsole
                 Cassete cassete = new Cassete(list[i].banknote.Nominal.ToString(), list[i].Count); buferList.Add(cassete);
             }
 
-            converter = new MoneyConverterToString();
+            converter = new CasseteConverterToString();
             log.Debug("Insert cassettes: " + converter.ConvertMoneyInCassetes(list));
         }
 
@@ -106,3 +109,5 @@ namespace ATMСonsole
         }
     }
 }
+    
+

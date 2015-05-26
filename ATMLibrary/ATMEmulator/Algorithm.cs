@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using ATM.Cassetes;
+using ATMLibrary.MoneyEmulator;
 
-namespace ATMСonsole
+namespace ATMLibrary.Emulator
 {
-    class Algorithm
+    public class Algorithm
     {
         public ATMState state = new ATMState();
 
         public int summaryCount;
 
-        static readonly ILog log = LogManager.GetLogger(typeof(Algorithm)); 
+        static readonly ILog log = LogManager.GetLogger(typeof(Algorithm));
 
         public int[] SplitSum(int sum, int bufer, List<Cassete> buferList, Money money)
         {
@@ -31,14 +33,14 @@ namespace ATMСonsole
                 for (i = 0; i < buferList.Count; ++i)
                 {
                     if (m >= buferList[i].banknote.Nominal && F[m - buferList[i].banknote.Nominal] + 1 < F[m] && buferList[i].Count > 0)
-                        F[m] = F[m - buferList[i].banknote.Nominal] + 1; 
+                        F[m] = F[m - buferList[i].banknote.Nominal] + 1;
                 }
             }
 
             return F;
         }
 
-        public Money GetMoney (int sum, int bufer, List<Cassete> buferlist, int[] F, Money money)
+        public Money GetMoney(int sum, int bufer, List<Cassete> buferlist, int[] F, Money money)
         {
             summaryCount = 0;
             int[] num = new int[buferlist.Count];
@@ -89,12 +91,12 @@ namespace ATMСonsole
                 F[m] = bufer + 1;
                 for (i = 0; i < buferlist.Count; ++i)
                 {
-                    if (m >= buferlist[i].banknote.Nominal && F[m - buferlist[i].banknote.Nominal] + 1 < F[m] )
+                    if (m >= buferlist[i].banknote.Nominal && F[m - buferlist[i].banknote.Nominal] + 1 < F[m])
                         F[m] = F[m - buferlist[i].banknote.Nominal] + 1;
                 }
             }
 
-            if (F[sum] == bufer + 1) 
+            if (F[sum] == bufer + 1)
             {
                 flag = false;
                 state = ATMState.ImpossibleToCollectSum;
